@@ -18,12 +18,11 @@ export default function Login() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    console.log("Usuario:", user, "Contraseña:", pass)
 
     if (user === bduser && pass === bdpasswd) {
       dispatch(authActions.login({
         userName: user,
-        userRol: "administrador" // Rol hardcoded como ejemplo
+        userRol: "administrador"
       }))
       setError(false)
       navigate("/home")
@@ -57,19 +56,6 @@ export default function Login() {
         fullWidth
         required
         value={pass}
-        onChange={(e) => setPass(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          Usuario o contraseña incorrectos
-        </Alert>
-      )}
-
-      <Button variant="contained" type="submit" fullWidth>
-        Acceder
-      </Button>
     </Box>
   )
 }
