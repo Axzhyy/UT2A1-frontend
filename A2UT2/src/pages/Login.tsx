@@ -1,8 +1,10 @@
 import { Box, Button, TextField, Typography, Alert } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { authActions } from "../store/authSlice"
 
-export default function Login(){
+export default function Login() {
 
   const [user, setUser] = useState("")
   const [pass, setPass] = useState("")
@@ -11,13 +13,18 @@ export default function Login(){
   const bduser = "joel"
   const bdpasswd = "1234"
 
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleSubmit = (e:any)=>{
+  const handleSubmit = (e: any) => {
     e.preventDefault()
     console.log("Usuario:", user, "Contraseña:", pass)
 
-    if(user === bduser && pass === bdpasswd){
+    if (user === bduser && pass === bdpasswd) {
+      dispatch(authActions.login({
+        userName: user,
+        userRol: "administrador" // Rol hardcoded como ejemplo
+      }))
       setError(false)
       navigate("/home")
     } else {
@@ -25,11 +32,11 @@ export default function Login(){
     }
   }
 
-  return(
+  return (
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ width:"320px", m:"80px auto", p:3, border:"1px solid #ccc", borderRadius:"8px" }}
+      sx={{ width: "320px", m: "80px auto", p: 3, border: "1px solid #ccc", borderRadius: "8px" }}
     >
       <Typography variant="h4" textAlign="center" mb={3}>
         Acceso
@@ -40,8 +47,8 @@ export default function Login(){
         fullWidth
         required
         value={user}
-        onChange={(e)=>setUser(e.target.value)}
-        sx={{ mb:2 }}
+        onChange={(e) => setUser(e.target.value)}
+        sx={{ mb: 2 }}
       />
 
       <TextField
@@ -50,12 +57,12 @@ export default function Login(){
         fullWidth
         required
         value={pass}
-        onChange={(e)=>setPass(e.target.value)}
-        sx={{ mb:2 }}
+        onChange={(e) => setPass(e.target.value)}
+        sx={{ mb: 2 }}
       />
 
       {error && (
-        <Alert severity="error" sx={{ mb:2 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
           Usuario o contraseña incorrectos
         </Alert>
       )}
