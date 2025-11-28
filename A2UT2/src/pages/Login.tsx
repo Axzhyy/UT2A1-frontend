@@ -10,24 +10,36 @@ export default function Login() {
   const [pass, setPass] = useState("")
   const [error, setError] = useState(false)
 
-  const bduser = "joel"
-  const bdpasswd = "1234"
-
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
 
-    if (user === bduser && pass === bdpasswd) {
-      dispatch(authActions.login({
-        userName: user,
-        userRol: "administrador"
-      }))
-      setError(false)
-      navigate("/home")
-    } else {
-      setError(true)
+    try {
+      const response = await fetch('http://localhost:3030/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user, password: pass }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        dispatch(authActions.login({
+          userName: data.user,
+          userRol: data.role
+        }))
+        setError(false)
+        navigate("/home")
+      } else {
+        setError(true)
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(true);
     }
   }
 
@@ -56,6 +68,19 @@ export default function Login() {
         fullWidth
         required
         value={pass}
+        onChange={(e) => setPass(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          Usuario o contraseña incorrectos
+        </Alert>
+      )}
+
+      <Button variant="contained" type="submit" fullWidth>
+        Acceder
+      </Button>
     </Box>
   )
 }
